@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TokenService } from '../angular-app-services/token.service';
 import { TooltipService } from '../angular-app-services/tooltip.service';
@@ -13,7 +13,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   templateUrl: './logout.component.html',
   styleUrl: './logout.component.scss'
 })
-export class LogoutComponent {
+export class LogoutComponent implements OnInit {
   user!: User;
   constructor(
     private router: Router,
@@ -22,6 +22,7 @@ export class LogoutComponent {
     private dialog: MatDialog
   ) {
   }
+
   ngOnInit(): void {
     this.populateUserProfile();
   }

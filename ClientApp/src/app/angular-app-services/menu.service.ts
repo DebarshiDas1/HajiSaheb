@@ -7,11 +7,14 @@ import { AppConfigService } from '../app-config.service';
   providedIn: 'root'
 })
 export class MenuService {
-  private menuUrl = `${AppConfigService.appConfig.api.url}/api/meta-data/menu`;
-
   constructor(private http: HttpClient) { }
 
-  getMenu(): Observable<any> {
-    return this.http.get<any>(this.menuUrl);
+  private get route() {
+    const baseUrl = AppConfigService.appConfig ? AppConfigService.appConfig.api.url : '';
+    return `${baseUrl}/api/meta-data/menu`;
+  }
+
+  public getMenu(): Observable<any> {
+    return this.http.get<any>(this.route);
   }
 }

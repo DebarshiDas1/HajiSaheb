@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoginInfoPayload } from './login-info-payload';
@@ -14,7 +14,7 @@ import { SweetAlertService } from '../angular-app-services/sweet-alert.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   private formSubmitAttempt: boolean = false;
   protected destroy$ = new Subject();
@@ -50,7 +50,7 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     if (this.form.valid) {
-      let loginDetail: LoginInfoPayload = {
+      const loginDetail: LoginInfoPayload = {
         userName: this.form.value.userName,
         password: this.form.value.password
       };

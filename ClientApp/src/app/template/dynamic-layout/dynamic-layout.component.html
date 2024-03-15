@@ -7,7 +7,7 @@
 
 
                     <!-- Section -->
-                    <div *ngSwitchCase="'section'" class="card-title col-sm-12">
+                    <div *ngSwitchCase="'section'" class="card-title col-md-{{field.width}}">
                         <p class="section-header tuncate-text"><i *ngIf="field.icon"
                                 class="fas {{field.icon}} mr10"></i>{{field.name}}</p>
                         <app-dynamic-layout [form]="form" [formFields]="field.fields"
@@ -16,7 +16,7 @@
 
                     <ng-container *ngSwitchDefault>
                         <!-- Inputs starts here -->
-                        <div [ngSwitch]="field.dataType.toLowerCase()" class="col-xl-3 col-lg-6 col-md-12 col-sm-12">
+                        <div [ngSwitch]="field.dataType.toLowerCase()" class="col-md-{{field.width}}">
                             <!-- Textbox -->
                             <mat-form-field *ngSwitchDefault class="input-form-field input-flds field-pb-0">
                                 <mat-label>{{field.label}}</mat-label>

@@ -34,8 +34,8 @@ export class SideBarComponent implements OnInit, OnDestroy {
   }
 
   showSubMenu(event: MouseEvent): void {
-    const targetAttr = (event.target as HTMLElement);
-    const subMenuItem = (targetAttr.querySelector('.sub-nav-link') as HTMLElement);
+    const targetAttr = (event.target as HTMLElement),
+      subMenuItem = (targetAttr.querySelector('.sub-nav-link') as HTMLElement);
 
     if (subMenuItem) {
       subMenuItem.style.top = targetAttr.getBoundingClientRect().top + 'px';
@@ -44,26 +44,20 @@ export class SideBarComponent implements OnInit, OnDestroy {
   }
 
   openLogoutDialog(event: any) {
-    // active state for logout btn
-    //this.isLogoutDialogOpen = true;
+    const targetAttr = event.target.getBoundingClientRect(),
+      dialogConfig = new MatDialogConfig();
 
-    let targetAttr = event.target.getBoundingClientRect();
-    const dialogConfig = new MatDialogConfig();
     dialogConfig.position = {
-      left: targetAttr.x + targetAttr.width + 15 + "px",
+      left: targetAttr.x + targetAttr.width + 15 + 'px',
       bottom: '15px'
     };
 
-    const dialogRef = this.dialog.open(LogoutComponent, {
+    this.dialog.open(LogoutComponent, {
       width: '250px',
       panelClass: 'logout-dialog-wrapper',
       position: dialogConfig.position,
       autoFocus: false,
       backdropClass: 'no-back-drop',
     });
-
-    // active state for logout btn
-    //dialogRef.afterClosed().subscribe(() => this.isLogoutDialogOpen = false);
   }
-
 }

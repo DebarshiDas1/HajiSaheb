@@ -7,11 +7,14 @@ import { AppConfigService } from '../app-config.service';
     providedIn: 'root'
 })
 export class LayoutService {
-    private baseUrl = `${AppConfigService.appConfig.api.url}/api/meta-data`;
-
     constructor(private http: HttpClient) { }
 
-    getLayout(entityName: string, layoutType: string): Observable<any> {
-        return this.http.get<any>(`${this.baseUrl}/${entityName}/layout?layoutType=${layoutType}`);
+    private get route() {
+        const baseUrl = AppConfigService.appConfig ? AppConfigService.appConfig.api.url : '';
+        return `${baseUrl}/api/meta-data`;
+    }
+
+    public getLayout(entityName: string, layoutType: string): Observable<any> {
+        return this.http.get<any>(`${this.route}/${entityName}/layout?layoutType=${layoutType}`);
     }
 }

@@ -47,7 +47,7 @@ export class TemplateListComponent implements OnInit, OnChanges, OnDestroy {
       this.sentenceCaseEntityName = _toSentenceCase(this.entityName);
     }
     setTimeout(() => {
-      let selectedDiv = document.getElementById('div-' + this.selectedIndex) as HTMLElement;
+      const selectedDiv = document.getElementById('div-' + this.selectedIndex) as HTMLElement;
       selectedDiv?.scrollIntoView();
     }, 100);
   }

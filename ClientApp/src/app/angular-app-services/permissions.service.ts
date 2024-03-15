@@ -6,16 +6,20 @@ import { AuthService } from './auth.service';
 
 @Injectable()
 export class PermissionsService {
-
-  constructor(private router: Router, private tokenService: TokenService, private authService: AuthService) { }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private tokenService: TokenService
+  ) {
+  }
 
   /**
    * Checks if the user is authorized to activate the route.
    * Returns an Observable with the authorization result.
    */
   canActivate(state: RouterStateSnapshot): Observable<boolean> {
-    const token = this.tokenService.getTokenInfo();
-    const url: string = state.url;
+    const token = this.tokenService.getTokenInfo(),
+      url: string = state.url;
     // If token data exist, user may log in to the application
     if (token.value && !this.tokenService.isAuthTokenExpired(token.value)) {
       return of(true);
@@ -55,7 +59,6 @@ export class PermissionsService {
 /**
  * Checks if the user is authorized to activate the route.
  */
-export const canActivateTeam: CanActivateFn =
-  (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
-    return inject(PermissionsService).canActivate(state);
-  };
+export const canActivateTeam: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+  return inject(PermissionsService).canActivate(state);
+};

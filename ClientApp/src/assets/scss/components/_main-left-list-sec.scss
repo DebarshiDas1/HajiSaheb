@@ -8,9 +8,9 @@
   border-right: 1px solid var(--border-color-dark);
 
   @include desktop-xl {
-    min-width: 400px;
-    max-width: 400px;
-    padding: 0 0 0 20px;
+    min-width: 350px;
+    max-width: 350px;
+    padding: 0 0 0 25px;
   }
 
   .list-sec-top-bar {

@@ -20,7 +20,7 @@
             <div class="filter-icon" (click)="showFilterPanel = !showFilterPanel">
                 <img src="assets/images/icons/filter.svg" width="20" height="20" alt="filter">
             </div>
-            <div class="filter-panel" *ngIf="showFilterPanel">
+            <div class="filter-panel ec-custom-scroll" *ngIf="showFilterPanel">
                 <div class="filter-data" *ngIf="filterData?.length">
                     <div class="filter-data-item" *ngFor="let data of filterData">
                         <p class="filter-text">{{data.value}}</p>
@@ -138,9 +138,10 @@
                 </div>
             </div>
             <ng-template #noDataFoundSection>
-                <div class="no-data-section mt-4">
-                    <img src="assets/images/icons/no-data-found.svg" width="220" height="220" alt="No data found" />
-                    <p class="font-title-xs fw-normal color-font-secondary">No data found.</p>
+                <div class="no-data-state no-data-state-list-box">
+                    <img class="no-data-state-img" src="assets/images/icons/no-data-found.svg" width="150" height="150"
+                        alt="No data available" />
+                    <p class="text-no-data">No data available.</p>
                 </div>
             </ng-template>
         </div>

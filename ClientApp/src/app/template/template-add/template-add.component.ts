@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Observable, Subject, forkJoin, takeUntil } from 'rxjs';
@@ -13,7 +13,7 @@ import { _camelCase, _toSentenceCase } from 'src/app/library/utils';
   templateUrl: './template-add.component.html',
   styleUrl: './template-add.component.scss'
 })
-export class TemplateAddComponent implements OnInit {
+export class TemplateAddComponent implements OnInit, OnDestroy {
   @Input() entityName: string = '';
   @Input() id: string = '';
   @Output() saved = new EventEmitter<boolean>();
@@ -145,7 +145,7 @@ export class TemplateAddComponent implements OnInit {
         if (field.dataType.toLowerCase() === 'numeric') {
           if (field.scale) {
             const scale = parseInt(field.scale),
-              regEx = RegExp("^-?[0-9]+(\\.[0-9]{0," + scale + "}){0,1}$");
+              regEx = RegExp('^-?[0-9]+(\\.[0-9]{0,' + scale + '}){0,1}$');
             validators.push(Validators.pattern(regEx));
           } else {
             validators.push(Validators.pattern(/^-?\d+$/));
@@ -155,7 +155,8 @@ export class TemplateAddComponent implements OnInit {
         this.form?.addControl(field.fieldName, new FormControl(defaultValue, validators));
         if (field.dataType.toLowerCase() === 'guid' && !this.fieldOptions[field.fieldName]) {
           this.fieldOptions[field.fieldName] = [];
-          apis.push(this.entityDataService.getRecordByUrl(field.optionsEndpoint));
+          if (field.dataSource)
+            apis.push(this.entityDataService.getRecords(field.dataSource));
         }
       }
     });

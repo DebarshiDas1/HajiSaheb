@@ -7,34 +7,33 @@ import { AppConfigService } from '../app-config.service';
     providedIn: 'root'
 })
 export class EntityDataService {
-    private baseUrl = `${AppConfigService.appConfig.api.url}/api`;
-
     constructor(private http: HttpClient) { }
 
-    addRecord(entityName: string, data: any): Observable<any> {
-        return this.http.post<any>(`${this.baseUrl}/${entityName}`, data);
+    private get route() {
+        const baseUrl = AppConfigService.appConfig ? AppConfigService.appConfig.api.url : '';
+        return `${baseUrl}/api`;
     }
 
-    getRecord(entityName: string, filters: any[] = []): Observable<any[]> {
+    public addRecord(entityName: string, data: any): Observable<any> {
+        return this.http.post<any>(`${this.route}/${entityName}`, data);
+    }
+
+    public deleteRecordById(entityName: string, id: string): Observable<any> {
+        return this.http.delete(`${this.route}/${entityName}/${id}`);
+    }
+
+    public editRecordById(entityName: string, id: string, data: any): Observable<any> {
+        return this.http.put<any>(`${this.route}/${entityName}/${id}`, data);
+    }
+
+    public getRecords(entityName: string, filters: any[] = []): Observable<any[]> {
         if (filters?.length > 0)
-            return this.http.get<any[]>(`${this.baseUrl}/${entityName}`, { params: { filters: JSON.stringify(filters) } });
+            return this.http.get<any[]>(`${this.route}/${entityName}`, { params: { filters: JSON.stringify(filters) } });
         else
-            return this.http.get<any[]>(`${this.baseUrl}/${entityName}`);
+            return this.http.get<any[]>(`${this.route}/${entityName}`);
     }
 
-    getRecordByUrl(url: string): Observable<any[]> {
-        return this.http.get<any[]>(`${AppConfigService.appConfig.api.url}${url}`);
-    }
-
-    getRecordById(entityName: string, id: string): Observable<any> {
-        return this.http.get<any>(`${this.baseUrl}/${entityName}/${id}`);
-    }
-
-    deleteRecordById(entityName: string, id: string): Observable<any> {
-        return this.http.delete(`${this.baseUrl}/${entityName}/${id}`);
-    }
-
-    editRecordById(entityName: string, id: string, data: any): Observable<any> {
-        return this.http.put<any>(`${this.baseUrl}/${entityName}/${id}`, data);
+    public getRecordById(entityName: string, id: string): Observable<any> {
+        return this.http.get<any>(`${this.route}/${entityName}/${id}`);
     }
 }

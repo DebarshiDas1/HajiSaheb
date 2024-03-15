@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpResponse, HttpUrlEncodingCodec, HttpParams, HttpParameterCodec } from '@angular/common/http';
-import { BehaviorSubject, EMPTY, Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, EMPTY, Observable, throwError } from 'rxjs';
 import { catchError, filter, finalize, switchMap, take, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { TokenService } from '../token.service';
@@ -17,71 +17,23 @@ export class HttpRequestInterceptor implements HttpInterceptor {
     constructor(
         private authService: AuthService,
         private route: Router,
-        private tokenService: TokenService,
+        private loaderService: LoaderService,
         private sweetAlertService: SweetAlertService,
-        private loaderService: LoaderService
+        private tokenService: TokenService
     ) { }
 
-    intercept(
+    public intercept(
         request: HttpRequest<any>,
         next: HttpHandler
     ): Observable<HttpEvent<any>> {
-        // show loader
         this.loaderService.show();
         const expired = this.checkRefreshTokenExpied(request);
         if (expired === true) {
-            // hide loader
             this.loaderService.hide();
             return EMPTY;
         } else {
             request = this.addAuthenticationToken(request);
             return this.refreshTokenAndRetry(request, next);
-        }
-    }
-    private checkRefreshTokenExpied(request: HttpRequest<any>): boolean {
-        if (this.route.url !== '/' && !request.url.includes('/login') && !request.url.includes('/refresh')) {
-            if (this.tokenService.getTokenInfo().value && this.tokenService.isAuthTokenExpired()) {
-                if (this.tokenService.isRefreshTokenExpired() === true) {
-                    this.tokenService.logout();
-                    this.route.navigate(['login']);
-                    return true;
-                } else {
-                    this.refreshExpiredToken = true;
-                    return false;
-                }
-            }
-        } else {
-            this.refreshExpiredToken = false;
-        }
-        return false;
-    }
-    private refreshTokenAndRetry(request: HttpRequest<any>, next: HttpHandler): Observable<any> {
-        if (this.refreshExpiredToken) {
-            if (this.tokenService.tokenGettingRefreshed) {
-                return this.refreshTokenSubject.pipe(
-                    filter(result => result !== null),
-                    take(1),
-                    switchMap(() => this.handleRequest(request, next)
-                    ));
-            } else {
-                this.tokenService.tokenGettingRefreshed = true;
-                this.refreshTokenSubject.next(null);
-                const refreshToken = this.tokenService.getRefreshToken() ?? '';
-                return this.authService.refreshToken(refreshToken).pipe(
-                    switchMap((data: any) => {
-                        if (data) {
-                            this.tokenService.setToken(data);
-                            this.tokenService.tokenGettingRefreshed = false;
-                            this.refreshTokenSubject.next(true);
-                            this.refreshExpiredToken = false;
-                        }
-                        return this.handleRequest(request, next);
-                    }),
-                    finalize(() => this.tokenService.tokenGettingRefreshed = false)
-                );
-            }
-        } else {
-            return this.handleRequest(request, next);
         }
     }
 
@@ -113,11 +65,28 @@ export class HttpRequestInterceptor implements HttpInterceptor {
         return request;
     }
 
-    handleRequest(req: HttpRequest<any>, next: HttpHandler) {
+    private checkRefreshTokenExpied(request: HttpRequest<any>): boolean {
+        if (this.route.url !== '/' && !request.url.includes('/login') && !request.url.includes('/refresh')) {
+            if (this.tokenService.getTokenInfo().value && this.tokenService.isAuthTokenExpired()) {
+                if (this.tokenService.isRefreshTokenExpired() === true) {
+                    this.tokenService.logout();
+                    this.route.navigate(['login']);
+                    return true;
+                } else {
+                    this.refreshExpiredToken = true;
+                    return false;
+                }
+            }
+        } else {
+            this.refreshExpiredToken = false;
+        }
+        return false;
+    }
+
+    private handleRequest(req: HttpRequest<any>, next: HttpHandler) {
         return next.handle(req).pipe(
             tap((event: any) => {
                 if (event instanceof HttpResponse) {
-                    // hide loader
                     this.loaderService.hide();
                 }
             }),
@@ -140,6 +109,36 @@ export class HttpRequestInterceptor implements HttpInterceptor {
                 return errThrow;
             })
         );
+    }
+
+    private refreshTokenAndRetry(request: HttpRequest<any>, next: HttpHandler): Observable<any> {
+        if (this.refreshExpiredToken) {
+            if (this.tokenService.tokenGettingRefreshed) {
+                return this.refreshTokenSubject.pipe(
+                    filter(result => result !== null),
+                    take(1),
+                    switchMap(() => this.handleRequest(request, next)
+                    ));
+            } else {
+                this.tokenService.tokenGettingRefreshed = true;
+                this.refreshTokenSubject.next(null);
+                const refreshToken = this.tokenService.getRefreshToken() ?? '';
+                return this.authService.refreshToken(refreshToken).pipe(
+                    switchMap((data: any) => {
+                        if (data) {
+                            this.tokenService.setToken(data);
+                            this.tokenService.tokenGettingRefreshed = false;
+                            this.refreshTokenSubject.next(true);
+                            this.refreshExpiredToken = false;
+                        }
+                        return this.handleRequest(request, next);
+                    }),
+                    finalize(() => this.tokenService.tokenGettingRefreshed = false)
+                );
+            }
+        } else {
+            return this.handleRequest(request, next);
+        }
     }
 }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject, forkJoin, takeUntil } from 'rxjs';
 import { EntityDataService } from 'src/app/angular-app-services/entity-data.service';
@@ -12,7 +12,7 @@ import { FormControl, FormGroup } from '@angular/forms';
   templateUrl: './template.component.html',
   styleUrl: './template.component.scss'
 })
-export class TemplateComponent implements OnInit {
+export class TemplateComponent implements OnInit, OnDestroy {
   selectedId: string = '';
   entityName: string = '';
   fieldOptions: { [key: string]: Option[]; } = {};
@@ -55,7 +55,7 @@ export class TemplateComponent implements OnInit {
     this.mappedListData = [];
     this.mappedPreviewData = [];
 
-    this.entityDataService.getRecord(this.entityName, filters)
+    this.entityDataService.getRecords(this.entityName, filters)
       .pipe(takeUntil(this.destroy))
       .subscribe({
         next: (records) => {
@@ -89,17 +89,19 @@ export class TemplateComponent implements OnInit {
     const fieldName = _camelCase(fieldInfo.fieldName),
       data = record[fieldName] || '';
     switch (fieldInfo.dataType.toLowerCase()) {
-      case 'datetime':
+      case 'datetime': {
         const date = Date.parse(data + 'Z');
         return isNaN(date) ? data : new Date(data + 'Z').toLocaleString();
+      }
       case 'numeric':
         return new Intl.NumberFormat().format(Number(data));
       case 'boolean':
         return data ? 'Yes' : 'No';
-      case 'guid':
+      case 'guid': {
         const refPropertyName = fieldName.replace('Id', ''),
           refObject = record[refPropertyName];
         return refObject?.name || this.getRefData(refObject?.$ref, this.records)?.name || data;
+      }
       default:
         return data;
     }
@@ -111,7 +113,7 @@ export class TemplateComponent implements OnInit {
     const apis = [
       this.layoutService.getLayout(this.entityName, 'List'),
       this.layoutService.getLayout(this.entityName, 'Edit'),
-      this.entityDataService.getRecord(this.entityName)
+      this.entityDataService.getRecords(this.entityName)
     ];
     forkJoin(apis)
       .pipe(takeUntil(this.destroy))
@@ -139,7 +141,7 @@ export class TemplateComponent implements OnInit {
           const val = this.getRefData(ref, record);
           if (val) return val;
         }
-      };
+      }
     } else {
       for (const [key, value] of Object.entries(records)) {
         if (key === '$id' && value === ref) {
@@ -161,11 +163,13 @@ export class TemplateComponent implements OnInit {
           name: node.name,
           icon: node.icon,
           type: node.type,
+          width: node.width,
           fields: node.fields.map((field: any) => {
             return {
               label: field.label,
               icon: field.icon,
-              value: this.getFormattedData(record, field)
+              value: this.getFormattedData(record, field),
+              width: field.width
             };
           })
         };
@@ -194,7 +198,8 @@ export class TemplateComponent implements OnInit {
     this.filterFields?.forEach(field => {
       if (field.dataType.toLowerCase() === 'guid') {
         fields.push(field.fieldName);
-        apis.push(this.entityDataService.getRecordByUrl(field.optionsEndpoint));
+        if (field.dataSource)
+          apis.push(this.entityDataService.getRecords(field.dataSource));
       }
     });
 
