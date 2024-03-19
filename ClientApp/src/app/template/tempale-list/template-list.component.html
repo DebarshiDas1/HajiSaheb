@@ -17,14 +17,15 @@
                 <button type="button" mat-button class="ec-text-btn ec-text-btn-color-2" (click)="clearAll()">Clear
                     all</button>
             </div>
-            <div class="filter-icon" (click)="showFilterPanel = !showFilterPanel">
+            <button class="filter-icon" (click)="showFilterPanel = !showFilterPanel">
                 <img src="assets/images/icons/filter.svg" width="20" height="20" alt="filter">
-            </div>
+            </button>
             <div class="filter-panel ec-custom-scroll" *ngIf="showFilterPanel">
                 <div class="filter-data" *ngIf="filterData?.length">
                     <div class="filter-data-item" *ngFor="let data of filterData">
                         <p class="filter-text">{{data.value}}</p>
-                        <a (click)="clearSpecificFilter(data.key)"><mat-icon aria-label="Delete">close</mat-icon></a>
+                        <a href="javascript:void(0)" (click)="clearSpecificFilter(data.key)"><mat-icon
+                                aria-label="Delete">close</mat-icon></a>
                     </div>
                 </div>
                 <form *ngIf="form && filterFields" [formGroup]="form" autocomplete="off" (ngSubmit)="onSearch()">
@@ -117,20 +118,20 @@
                         </ng-container>
                         <ng-container *ngFor="let detail of record.cardDetail?.fields">
                             <div *ngIf="detail.value" class="details-area">
-                                <span *ngIf="!detail.icon" class="font-body-medium color-font-primary me-2">{{
+                                <span *ngIf="!detail.icon" class="font-body-medium color-font-1 me-2">{{
                                     detail.label }}:</span>
-                                <i *ngIf="detail.icon" class="fas {{detail.icon}} mr10"></i>
-                                <span class="font-title-xs fw-normal color-font-secondary">{{ detail.value}}</span>
+                                <i *ngIf="detail.icon" class="fas {{detail.icon}} mr10 color-font-1"></i>
+                                <span class="font-title-xs fw-normal color-font-1">{{ detail.value}}</span>
                             </div>
                         </ng-container>
                         <div class="row status-area">
                             <ng-container *ngFor="let status of record.cardStatus?.fields; let j=index;">
                                 <div *ngIf="status.value"
                                     class="col-md-{{record.cardStatus?.fields?.length-1===j && j%2===0?12:6}}">
-                                    <div *ngIf="!status.icon" class="font-body-medium color-font-primary">{{
+                                    <div *ngIf="!status.icon" class="font-body-medium color-font-1">{{
                                         status.label }}</div>
-                                    <i *ngIf="status.icon" class="fas {{status.icon}} mr10"></i>
-                                    <span class="font-title-xs fw-normal color-font-secondary">{{ status.value }}</span>
+                                    <i *ngIf="status.icon" class="fas {{status.icon}} mr10 color-font-1"></i>
+                                    <span class="font-title-xs fw-normal color-font-1">{{ status.value }}</span>
                                 </div>
                             </ng-container>
                         </div>

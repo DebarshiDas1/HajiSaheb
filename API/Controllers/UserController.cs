@@ -5,6 +5,7 @@ using HajiSaheb.Filter;
 using HajiSaheb.Entities;
 using HajiSaheb.Authorization;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace HajiSaheb.Controllers
 {
@@ -33,26 +34,40 @@ namespace HajiSaheb.Controllers
         public IActionResult Post([FromBody] User model)
         {
             _context.User.Add(model);
-            var returnData = this._context.SaveChanges();
-            return Ok(returnData);
+            this._context.SaveChanges();
+            return Ok(new { model.Id });
         }
 
         /// <summary>Retrieves a list of users based on specified filters</summary>
         /// <param name="filters">The filter criteria in JSON format. Use the following format: [{"PropertyName": "PropertyName", "Operator": "Equal", "Value": "FilterValue"}] </param>
+        /// <param name="pageNumber">The page number.</param>
+        /// <param name="pageSize">The page size.</param>
         /// <returns>The filtered list of users</returns>
         [HttpGet]
         [UserAuthorize("User",Entitlements.Read)]
-        public IActionResult Get([FromQuery] string filters)
+        public IActionResult Get([FromQuery] string filters, int pageNumber = 1, int pageSize = 10)
         {
             List<FilterCriteria> filterCriteria = null;
+            if (pageSize < 1)
+            {
+                return BadRequest("Page size invalid.");
+            }
+
+            if (pageNumber < 1)
+            {
+                return BadRequest("Page mumber invalid.");
+            }
+
             if (!string.IsNullOrEmpty(filters))
             {
                 filterCriteria = JsonHelper.Deserialize<List<FilterCriteria>>(filters);
             }
 
             var query = _context.User.IncludeRelated().AsQueryable();
+            int skip = (pageNumber - 1) * pageSize;
             var result = FilterService<User>.ApplyFilter(query, filterCriteria);
-            return Ok(result);
+            var paginatedResult = result.Skip(skip).Take(pageSize).ToList();
+            return Ok(paginatedResult);
         }
 
         /// <summary>Retrieves a specific user by its primary key</summary>
@@ -82,8 +97,8 @@ namespace HajiSaheb.Controllers
             }
 
             _context.User.Remove(entityData);
-            var returnData = this._context.SaveChanges();
-            return Ok(returnData);
+            var status = this._context.SaveChanges();
+            return Ok(new { status });
         }
 
         /// <summary>Updates a specific user by its primary key</summary>
@@ -101,8 +116,30 @@ namespace HajiSaheb.Controllers
             }
 
             this._context.User.Update(updatedEntity);
-            var returnData = this._context.SaveChanges();
-            return Ok(returnData);
+            var status = this._context.SaveChanges();
+            return Ok(new { status });
+        }
+
+        /// <summary>Updates a specific user by its primary key</summary>
+        /// <param name="entityId">The primary key of the user</param>
+        /// <param name="updatedEntity">The user data to be updated</param>
+        /// <returns>The result of the operation</returns>
+        [HttpPatch]
+        [UserAuthorize("User",Entitlements.Update)]
+        [Route("{id:Guid}")]
+        public IActionResult UpdateById(Guid id, [FromBody] JsonPatchDocument<User> updatedEntity)
+        {
+            if (updatedEntity == null)
+                return BadRequest("Patch document is missing.");
+            var existingEntity = this._context.User.FirstOrDefault(t => t.Id == id);
+            if (existingEntity == null)
+                return NotFound();
+            updatedEntity.ApplyTo(existingEntity, ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            this._context.User.Update(existingEntity);
+            var status = this._context.SaveChanges();
+            return Ok(new { status });
         }
     }
 }

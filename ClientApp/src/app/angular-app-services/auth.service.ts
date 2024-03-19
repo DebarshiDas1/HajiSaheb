@@ -8,11 +8,6 @@ import { HttpClient } from '@angular/common/http';
 export class AuthService {
   constructor(private http: HttpClient) { }
 
-  private get route() {
-    const baseUrl = AppConfigService.appConfig ? AppConfigService.appConfig.api.url : '';
-    return `${baseUrl}/api/user-account/`;
-  }
-
   public login(credentials: LoginInfoPayload): Observable<any> {
     const url = this.route + 'login';
     return this.http.post<any>(url, credentials);
@@ -21,5 +16,10 @@ export class AuthService {
   public refreshToken(refreshToken: string): Observable<any> {
     const url = this.route + 'refresh';
     return this.http.post<any>(url, { refreshToken: refreshToken });
+  }
+
+  private get route(): string {
+    const baseUrl = AppConfigService.appConfig ? AppConfigService.appConfig.api.url : '';
+    return `${baseUrl}/api/user-account/`;
   }
 }

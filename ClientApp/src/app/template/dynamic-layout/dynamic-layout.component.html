@@ -21,6 +21,8 @@
                             <mat-form-field *ngSwitchDefault class="input-form-field input-flds field-pb-0">
                                 <mat-label>{{field.label}}</mat-label>
                                 <input matInput [formControlName]="field.fieldName" [required]="field.required">
+                                <mat-error>{{field.label}} is
+                                    required.</mat-error>
                             </mat-form-field>
 
                             <!-- Numeric -->

@@ -9,12 +9,12 @@ import { AppConfigService } from '../app-config.service';
 export class MenuService {
   constructor(private http: HttpClient) { }
 
-  private get route() {
-    const baseUrl = AppConfigService.appConfig ? AppConfigService.appConfig.api.url : '';
-    return `${baseUrl}/api/meta-data/menu`;
-  }
-
   public getMenu(): Observable<any> {
     return this.http.get<any>(this.route);
+  }
+
+  private get route(): string {
+    const baseUrl = AppConfigService.appConfig ? AppConfigService.appConfig.api.url : '';
+    return `${baseUrl}/api/meta-data/menu`;
   }
 }

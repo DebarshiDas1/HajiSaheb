@@ -9,11 +9,6 @@ import { AppConfigService } from '../app-config.service';
 export class EntityDataService {
     constructor(private http: HttpClient) { }
 
-    private get route() {
-        const baseUrl = AppConfigService.appConfig ? AppConfigService.appConfig.api.url : '';
-        return `${baseUrl}/api`;
-    }
-
     public addRecord(entityName: string, data: any): Observable<any> {
         return this.http.post<any>(`${this.route}/${entityName}`, data);
     }
@@ -35,5 +30,10 @@ export class EntityDataService {
 
     public getRecordById(entityName: string, id: string): Observable<any> {
         return this.http.get<any>(`${this.route}/${entityName}/${id}`);
+    }
+
+    private get route(): string {
+        const baseUrl = AppConfigService.appConfig ? AppConfigService.appConfig.api.url : '';
+        return `${baseUrl}/api`;
     }
 }
