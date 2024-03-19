@@ -79,5 +79,33 @@ namespace HajiSaheb.Entities
         /// UpdatedBy of the Books 
         /// </summary>
         public Guid? UpdatedBy { get; set; }
+        /// <summary>
+        /// ISBN of the Books 
+        /// </summary>
+        public int? ISBN { get; set; }
+        /// <summary>
+        /// Language of the Books 
+        /// </summary>
+        public string? Language { get; set; }
+        /// <summary>
+        /// Format of the Books 
+        /// </summary>
+        public string? Format { get; set; }
+        /// <summary>
+        /// PageNumbers of the Books 
+        /// </summary>
+        public int? PageNumbers { get; set; }
+        /// <summary>
+        /// Edition of the Books 
+        /// </summary>
+        public string? Edition { get; set; }
+        /// <summary>
+        /// Description of the Books 
+        /// </summary>
+        public string? Description { get; set; }
+        /// <summary>
+        /// Rating of the Books 
+        /// </summary>
+        public string? Rating { get; set; }
     }
 }
