@@ -11,6 +11,11 @@ namespace HajiSaheb.Entities
     public class Patient
     {
         /// <summary>
+        /// Required field Id of the Patient 
+        /// </summary>
+        [Required]
+        public Guid Id { get; set; }
+        /// <summary>
         /// TenantId of the Patient 
         /// </summary>
         public Guid? TenantId { get; set; }
