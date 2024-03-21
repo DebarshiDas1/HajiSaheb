@@ -14,7 +14,7 @@ namespace HajiSaheb.Entities
         /// Foreign key referencing the Tenant to which the Entity belongs 
         /// </summary>
         [Required]
-        public Guid TenantId { get; set; }
+        public Tenant id  TenantId { get; set; }
 
         /// <summary>
         /// Navigation property representing the associated Tenant
@@ -27,15 +27,15 @@ namespace HajiSaheb.Entities
         /// </summary>
         [Key]
         [Required]
-        public Guid Id { get; set; }
+        public Id Id { get; set; }
         /// <summary>
         /// Name of the Entity 
         /// </summary>
-        public string? Name { get; set; }
+        public Name? Name { get; set; }
         /// <summary>
         /// Foreign key referencing the User to which the Entity belongs 
         /// </summary>
-        public Guid? CreatedBy { get; set; }
+        public Created by ? CreatedBy { get; set; }
 
         /// <summary>
         /// Navigation property representing the associated User
@@ -45,15 +45,15 @@ namespace HajiSaheb.Entities
         /// <summary>
         /// CreatedOn of the Entity 
         /// </summary>
-        public DateTime? CreatedOn { get; set; }
+        public Created on ? CreatedOn { get; set; }
         /// <summary>
         /// UpdatedOn of the Entity 
         /// </summary>
-        public DateTime? UpdatedOn { get; set; }
+        public Updated on ? UpdatedOn { get; set; }
         /// <summary>
         /// Foreign key referencing the User to which the Entity belongs 
         /// </summary>
-        public Guid? UpdatedBy { get; set; }
+        public Updated by ? UpdatedBy { get; set; }
 
         /// <summary>
         /// Navigation property representing the associated User

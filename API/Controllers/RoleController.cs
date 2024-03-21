@@ -6,6 +6,7 @@ using HajiSaheb.Entities;
 using HajiSaheb.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
+using System.Linq.Expressions;
 
 namespace HajiSaheb.Controllers
 {
@@ -30,6 +31,10 @@ namespace HajiSaheb.Controllers
         /// <param name="model">The role data to be added</param>
         /// <returns>The result of the operation</returns>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Produces("application/json")]
         [UserAuthorize("Role",Entitlements.Create)]
         public IActionResult Post([FromBody] Role model)
         {
@@ -42,10 +47,17 @@ namespace HajiSaheb.Controllers
         /// <param name="filters">The filter criteria in JSON format. Use the following format: [{"PropertyName": "PropertyName", "Operator": "Equal", "Value": "FilterValue"}] </param>
         /// <param name="pageNumber">The page number.</param>
         /// <param name="pageSize">The page size.</param>
+        /// <param name="sortField">The entity's field name to sort.</param>
+        /// <param name="sortOrder">The sort order asc or desc.</param>
         /// <returns>The filtered list of roles</returns>
         [HttpGet]
         [UserAuthorize("Role",Entitlements.Read)]
-        public IActionResult Get([FromQuery] string filters, int pageNumber = 1, int pageSize = 10)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Produces("application/json")]
+        public IActionResult Get([FromQuery] string filters, int pageNumber = 1, int pageSize = 10, string sortField = null, string sortOrder = "asc")
         {
             List<FilterCriteria> filterCriteria = null;
             if (pageSize < 1)
@@ -66,29 +78,57 @@ namespace HajiSaheb.Controllers
             var query = _context.Role.IncludeRelated().AsQueryable();
             int skip = (pageNumber - 1) * pageSize;
             var result = FilterService<Role>.ApplyFilter(query, filterCriteria);
+            if (!string.IsNullOrEmpty(sortField))
+            {
+                var parameter = Expression.Parameter(typeof(Role), "b");
+                var property = Expression.Property(parameter, sortField);
+                var lambda = Expression.Lambda<Func<Role, object>>(Expression.Convert(property, typeof(object)), parameter);
+                if (sortOrder.Equals("asc", StringComparison.OrdinalIgnoreCase))
+                {
+                    result = result.OrderBy(lambda);
+                }
+                else if (sortOrder.Equals("desc", StringComparison.OrdinalIgnoreCase))
+                {
+                    result = result.OrderByDescending(lambda);
+                }
+                else
+                {
+                    return BadRequest("Invalid sort order. Use 'asc' or 'desc'.");
+                }
+            }
+
             var paginatedResult = result.Skip(skip).Take(pageSize).ToList();
             return Ok(paginatedResult);
         }
 
         /// <summary>Retrieves a specific role by its primary key</summary>
-        /// <param name="entityId">The primary key of the role</param>
+        /// <param name="id">The primary key of the role</param>
         /// <returns>The role data</returns>
         [HttpGet]
-        [Route("{id:Guid}")]
+        [Route("{id:Id}")]
         [UserAuthorize("Role",Entitlements.Read)]
-        public IActionResult GetById([FromRoute] Guid id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Produces("application/json")]
+        public IActionResult GetById([FromRoute] Id id)
         {
             var entityData = _context.Role.IncludeRelated().FirstOrDefault(entity => entity.Id == id);
             return Ok(entityData);
         }
 
         /// <summary>Deletes a specific role by its primary key</summary>
-        /// <param name="entityId">The primary key of the role</param>
+        /// <param name="id">The primary key of the role</param>
         /// <returns>The result of the operation</returns>
         [HttpDelete]
         [UserAuthorize("Role",Entitlements.Delete)]
-        [Route("{id:Guid}")]
-        public IActionResult DeleteById([FromRoute] Guid id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Produces("application/json")]
+        [Route("{id:Id}")]
+        public IActionResult DeleteById([FromRoute] Id id)
         {
             var entityData = _context.Role.IncludeRelated().FirstOrDefault(entity => entity.Id == id);
             if (entityData == null)
@@ -102,13 +142,18 @@ namespace HajiSaheb.Controllers
         }
 
         /// <summary>Updates a specific role by its primary key</summary>
-        /// <param name="entityId">The primary key of the role</param>
+        /// <param name="id">The primary key of the role</param>
         /// <param name="updatedEntity">The role data to be updated</param>
         /// <returns>The result of the operation</returns>
         [HttpPut]
         [UserAuthorize("Role",Entitlements.Update)]
-        [Route("{id:Guid}")]
-        public IActionResult UpdateById(Guid id, [FromBody] Role updatedEntity)
+        [Route("{id:Id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Produces("application/json")]
+        public IActionResult UpdateById(Id id, [FromBody] Role updatedEntity)
         {
             if (id != updatedEntity.Id)
             {
@@ -121,13 +166,19 @@ namespace HajiSaheb.Controllers
         }
 
         /// <summary>Updates a specific role by its primary key</summary>
-        /// <param name="entityId">The primary key of the role</param>
+        /// <param name="id">The primary key of the role</param>
         /// <param name="updatedEntity">The role data to be updated</param>
         /// <returns>The result of the operation</returns>
         [HttpPatch]
         [UserAuthorize("Role",Entitlements.Update)]
-        [Route("{id:Guid}")]
-        public IActionResult UpdateById(Guid id, [FromBody] JsonPatchDocument<Role> updatedEntity)
+        [Route("{id:Id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Produces("application/json")]
+        public IActionResult UpdateById(Id id, [FromBody] JsonPatchDocument<Role> updatedEntity)
         {
             if (updatedEntity == null)
                 return BadRequest("Patch document is missing.");

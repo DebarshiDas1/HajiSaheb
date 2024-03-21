@@ -14,7 +14,7 @@ namespace HajiSaheb.Entities
         /// Foreign key referencing the Tenant to which the RoleEntitlement belongs 
         /// </summary>
         [Required]
-        public Guid TenantId { get; set; }
+        public Tenant id  TenantId { get; set; }
 
         /// <summary>
         /// Navigation property representing the associated Tenant
@@ -27,11 +27,11 @@ namespace HajiSaheb.Entities
         /// </summary>
         [Key]
         [Required]
-        public Guid Id { get; set; }
+        public Id Id { get; set; }
         /// <summary>
         /// Foreign key referencing the Role to which the RoleEntitlement belongs 
         /// </summary>
-        public Guid? RoleId { get; set; }
+        public Role id ? RoleId { get; set; }
 
         /// <summary>
         /// Navigation property representing the associated Role
@@ -41,7 +41,7 @@ namespace HajiSaheb.Entities
         /// <summary>
         /// Foreign key referencing the Entity to which the RoleEntitlement belongs 
         /// </summary>
-        public Guid? EntityId { get; set; }
+        public Entity id ? EntityId { get; set; }
 
         /// <summary>
         /// Navigation property representing the associated Entity
@@ -53,11 +53,11 @@ namespace HajiSaheb.Entities
         /// Required field Entitlement of the RoleEntitlement 
         /// </summary>
         [Required]
-        public int Entitlement { get; set; }
+        public Entitlement Entitlement { get; set; }
         /// <summary>
         /// Foreign key referencing the User to which the RoleEntitlement belongs 
         /// </summary>
-        public Guid? CreatedBy { get; set; }
+        public Created by ? CreatedBy { get; set; }
 
         /// <summary>
         /// Navigation property representing the associated User
@@ -67,15 +67,15 @@ namespace HajiSaheb.Entities
         /// <summary>
         /// CreatedOn of the RoleEntitlement 
         /// </summary>
-        public DateTime? CreatedOn { get; set; }
+        public Created on ? CreatedOn { get; set; }
         /// <summary>
         /// UpdatedOn of the RoleEntitlement 
         /// </summary>
-        public DateTime? UpdatedOn { get; set; }
+        public Updated on ? UpdatedOn { get; set; }
         /// <summary>
         /// Foreign key referencing the User to which the RoleEntitlement belongs 
         /// </summary>
-        public Guid? UpdatedBy { get; set; }
+        public Updated by ? UpdatedBy { get; set; }
 
         /// <summary>
         /// Navigation property representing the associated User

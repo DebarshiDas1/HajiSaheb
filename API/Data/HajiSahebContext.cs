@@ -52,6 +52,5 @@ namespace HajiSaheb.Data
         public DbSet<Role> Role { get; set; }
         public DbSet<Author> Author { get; set; }
         public DbSet<Books> Books { get; set; }
-        public DbSet<Patient> Patient { get; set; }
     }
 }

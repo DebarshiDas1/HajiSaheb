@@ -626,3 +626,10 @@
         }
     }
 }
+
+@media screen and (max-width: 768px) {
+
+    .mat-mdc-dialog-panel {
+        width: 100vw !important;
+    }
+}

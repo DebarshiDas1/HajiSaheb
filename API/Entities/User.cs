@@ -14,7 +14,7 @@ namespace HajiSaheb.Entities
         /// Foreign key referencing the Tenant to which the User belongs 
         /// </summary>
         [Required]
-        public Guid TenantId { get; set; }
+        public Tenant id  TenantId { get; set; }
 
         /// <summary>
         /// Navigation property representing the associated Tenant
@@ -27,61 +27,61 @@ namespace HajiSaheb.Entities
         /// </summary>
         [Key]
         [Required]
-        public Guid Id { get; set; }
+        public Id Id { get; set; }
         /// <summary>
         /// Name of the User 
         /// </summary>
-        public string? Name { get; set; }
+        public Name? Name { get; set; }
 
         /// <summary>
         /// Required field EmailId of the User 
         /// </summary>
         [Required]
-        public string EmailId { get; set; }
+        public Email id  EmailId { get; set; }
 
         /// <summary>
         /// Required field UserName of the User 
         /// </summary>
         [Required]
-        public string UserName { get; set; }
+        public User name  UserName { get; set; }
 
         /// <summary>
         /// Required field PasswordHash of the User 
         /// </summary>
         [Required]
-        public string PasswordHash { get; set; }
+        public Password hash  PasswordHash { get; set; }
 
         /// <summary>
         /// Required field Saltkey of the User 
         /// </summary>
         [Required]
-        public string Saltkey { get; set; }
+        public Salt key  Saltkey { get; set; }
         /// <summary>
         /// DOB of the User 
         /// </summary>
-        public DateTime? DOB { get; set; }
+        public Date of  birth ? DOB { get; set; }
 
         /// <summary>
         /// Required field IsSuperAdmin of the User 
         /// </summary>
         [Required]
-        public bool IsSuperAdmin { get; set; }
+        public Is superadmin  IsSuperAdmin { get; set; }
         /// <summary>
         /// CreatedOn of the User 
         /// </summary>
-        public DateTime? CreatedOn { get; set; }
+        public Created on ? CreatedOn { get; set; }
         /// <summary>
         /// CreatedBy of the User 
         /// </summary>
-        public Guid? CreatedBy { get; set; }
+        public Created by ? CreatedBy { get; set; }
         /// <summary>
         /// UpdatedOn of the User 
         /// </summary>
-        public DateTime? UpdatedOn { get; set; }
+        public Updated on ? UpdatedOn { get; set; }
         /// <summary>
         /// UpdatedBy of the User 
         /// </summary>
-        public Guid? UpdatedBy { get; set; }
+        public Updated by ? UpdatedBy { get; set; }
         /// <summary>
         /// Collection navigation property representing associated 
         /// </summary>

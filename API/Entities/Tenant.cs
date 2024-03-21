@@ -15,49 +15,49 @@ namespace HajiSaheb.Entities
         /// </summary>
         [Key]
         [Required]
-        public Guid Id { get; set; }
+        public Id Id { get; set; }
 
         /// <summary>
         /// Required field Code of the Tenant 
         /// </summary>
         [Required]
-        public string Code { get; set; }
+        public Code Code { get; set; }
         /// <summary>
         /// Name of the Tenant 
         /// </summary>
-        public string? Name { get; set; }
+        public Name? Name { get; set; }
         /// <summary>
         /// Address1 of the Tenant 
         /// </summary>
-        public string? Address1 { get; set; }
+        public Address1? Address1 { get; set; }
         /// <summary>
         /// Address2 of the Tenant 
         /// </summary>
-        public string? Address2 { get; set; }
+        public Address2? Address2 { get; set; }
         /// <summary>
         /// City of the Tenant 
         /// </summary>
-        public string? City { get; set; }
+        public City? City { get; set; }
         /// <summary>
         /// Pincode of the Tenant 
         /// </summary>
-        public int? Pincode { get; set; }
+        public Pincode? Pincode { get; set; }
         /// <summary>
         /// CreatedOn of the Tenant 
         /// </summary>
-        public DateTime? CreatedOn { get; set; }
+        public Created on ? CreatedOn { get; set; }
         /// <summary>
         /// CreatedBy of the Tenant 
         /// </summary>
-        public Guid? CreatedBy { get; set; }
+        public Created by ? CreatedBy { get; set; }
         /// <summary>
         /// UpdatedOn of the Tenant 
         /// </summary>
-        public DateTime? UpdatedOn { get; set; }
+        public Updated on ? UpdatedOn { get; set; }
         /// <summary>
         /// UpdatedBy of the Tenant 
         /// </summary>
-        public Guid? UpdatedBy { get; set; }
+        public Updated by ? UpdatedBy { get; set; }
         /// <summary>
         /// Collection navigation property representing associated 
         /// </summary>

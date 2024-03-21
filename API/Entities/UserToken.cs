@@ -14,7 +14,7 @@ namespace HajiSaheb.Entities
         /// Foreign key referencing the Tenant to which the UserToken belongs 
         /// </summary>
         [Required]
-        public Guid TenantId { get; set; }
+        public Tenant id  TenantId { get; set; }
 
         /// <summary>
         /// Navigation property representing the associated Tenant
@@ -27,11 +27,11 @@ namespace HajiSaheb.Entities
         /// </summary>
         [Key]
         [Required]
-        public Guid Id { get; set; }
+        public Id Id { get; set; }
         /// <summary>
         /// Foreign key referencing the User to which the UserToken belongs 
         /// </summary>
-        public Guid? UserId { get; set; }
+        public User id ? UserId { get; set; }
 
         /// <summary>
         /// Navigation property representing the associated User
@@ -41,10 +41,10 @@ namespace HajiSaheb.Entities
         /// <summary>
         /// RefershToken of the UserToken 
         /// </summary>
-        public string? RefershToken { get; set; }
+        public Refresh token ? RefershToken { get; set; }
         /// <summary>
         /// CreatedOn of the UserToken 
         /// </summary>
-        public DateTime? CreatedOn { get; set; }
+        public Created on ? CreatedOn { get; set; }
     }
 }
